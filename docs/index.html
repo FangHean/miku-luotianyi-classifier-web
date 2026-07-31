@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="在浏览器本地识别图片中的初音未来或洛天依，图片不会上传服务器。"
+    >
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
+    >
+    <meta name="theme-color" content="#f7faf9">
+    <title>初音未来 / 洛天依图片识别</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232db9ad'/%3E%3Cpath d='M18 39c8-21 20-21 28 0' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='25' r='3' fill='white'/%3E%3Ccircle cx='40' cy='25' r='3' fill='white'/%3E%3C/svg%3E"
+    >
+    <link rel="stylesheet" href="./styles.css">
+    <script defer src="./vendor/ort.wasm.min.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#recognizer">跳到识别区域</a>
+
+    <main class="shell">
+      <header class="hero">
+        <p class="eyebrow"><span aria-hidden="true"></span>浏览器本地 AI 识别</p>
+        <h1>这张图片里是<br><em>初音未来</em>还是<em>洛天依</em>？</h1>
+        <p class="hero-copy">
+          选择一张图片，模型会直接在你的设备中完成判断。图片不会上传，
+          也不会保存到任何服务器。
+        </p>
+        <div class="privacy-pill">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3 5 6v5c0 4.8 2.9 8.3 7 10 4.1-1.7 7-5.2 7-10V6l-7-3Z"/>
+            <path d="m9.2 12 1.8 1.8 4-4"/>
+          </svg>
+          图片仅在本机处理
+        </div>
+      </header>
+
+      <section class="recognizer" id="recognizer" aria-labelledby="recognizer-title">
+        <div class="panel-heading">
+          <div>
+            <p class="step-label">01 · 选择图片</p>
+            <h2 id="recognizer-title">上传一张清晰的单人图</h2>
+          </div>
+          <div class="model-status" id="modelStatus" role="status" aria-live="polite">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span id="statusText">正在加载模型…</span>
+          </div>
+        </div>
+
+        <label class="drop-zone" id="dropZone" for="fileInput">
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/bmp,image/gif"
+            disabled
+          >
+          <span class="upload-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 15.5v3A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-3"/>
+            </svg>
+          </span>
+          <span class="drop-title">拖放图片到这里</span>
+          <span class="drop-copy">或点击选择 JPG、PNG、WebP 等常见格式</span>
+          <span class="choose-button">选择图片</span>
+        </label>
+
+        <div class="error-message" id="errorMessage" role="alert" hidden></div>
+
+        <section class="result" id="result" aria-labelledby="resultTitle" hidden>
+          <div class="preview-wrap">
+            <img id="preview" alt="待识别图片预览">
+            <span class="preview-badge" id="previewBadge">已完成</span>
+          </div>
+
+          <div class="result-copy">
+            <p class="step-label">02 · 识别结果</p>
+            <div class="answer-row">
+              <h2 id="resultTitle">判断为 <span id="predictionName">—</span></h2>
+              <span class="confidence-chip" id="confidenceChip">—</span>
+            </div>
+            <p class="result-note" id="resultNote"></p>
+
+            <div class="probability-list" aria-label="分类概率">
+              <div class="probability-item">
+                <div class="probability-label">
+                  <span>初音未来</span>
+                  <strong id="mikuValue">0%</strong>
+                </div>
+                <div
+                  class="probability-track"
+                  role="progressbar"
+                  aria-label="初音未来概率"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="0"
+                  id="mikuProgress"
+                >
+                  <span class="miku-bar" id="mikuBar"></span>
+                </div>
+              </div>
+
+              <div class="probability-item">
+                <div class="probability-label">
+                  <span>洛天依</span>
+                  <strong id="luoValue">0%</strong>
+                </div>
+                <div
+                  class="probability-track"
+                  role="progressbar"
+                  aria-label="洛天依概率"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="0"
+                  id="luoProgress"
+                >
+                  <span class="luo-bar" id="luoBar"></span>
+                </div>
+              </div>
+            </div>
+
+            <button class="secondary-button" id="tryAgain" type="button">
+              换一张图片
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <section class="facts" aria-label="使用说明">
+        <article>
+          <span class="fact-number">96.01%</span>
+          <h2>内部独立测试准确率</h2>
+          <p>同分布测试集表现；桌面 testdata 外部图片实测为 81.44%。</p>
+        </article>
+        <article>
+          <span class="fact-icon" aria-hidden="true">◎</span>
+          <h2>更适合单人主体图</h2>
+          <p>多人同框、角色变体、遮挡严重或非目标人物可能降低可靠性。</p>
+        </article>
+        <article>
+          <span class="fact-icon" aria-hidden="true">⌁</span>
+          <h2>首次加载约 56 MB</h2>
+          <p>模型和运行组件会被浏览器缓存，之后再次打开通常更快。</p>
+        </article>
+      </section>
+
+      <footer>
+        <p>模型只在两个目标类别中选择，不代表人物检测或身份确认。</p>
+        <p>ResNet18 · ONNX Runtime Web · v1.0</p>
+      </footer>
+    </main>
+
+    <canvas id="processingCanvas" width="224" height="224" hidden></canvas>
+  </body>
+</html>

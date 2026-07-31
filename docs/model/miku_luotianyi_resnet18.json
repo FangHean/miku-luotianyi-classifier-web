@@ -1,0 +1,22 @@
+{
+  "architecture": "resnet18",
+  "image_size": 224,
+  "class_names": [
+    "hatsune_miku",
+    "luo_tianyi"
+  ],
+  "class_display_names": {
+    "hatsune_miku": "初音未来",
+    "luo_tianyi": "洛天依"
+  },
+  "decision_threshold": 0.6500000000000001,
+  "test_time_augmentation": "original + horizontal flip logits average",
+  "output": "softmax probabilities [hatsune_miku, luo_tianyi]",
+  "onnx_opset": 17,
+  "deployment_parts": [
+    "miku_luotianyi_resnet18.onnx.part-00",
+    "miku_luotianyi_resnet18.onnx.part-01"
+  ],
+  "sha256": "03e05ff80cea16c0fa974e6747753110e37d4412d4701397033c456d7e6c3772",
+  "size_bytes": 44714155
+}
