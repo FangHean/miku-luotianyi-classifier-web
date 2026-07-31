@@ -12,7 +12,7 @@
       content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
     >
     <meta name="theme-color" content="#f7faf9">
-    <title>初音未来 / 洛天依图片识别</title>
+    <title>我是初音未来</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232db9ad'/%3E%3Cpath d='M18 39c8-21 20-21 28 0' fill='none' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='25' r='3' fill='white'/%3E%3Ccircle cx='40' cy='25' r='3' fill='white'/%3E%3C/svg%3E"
@@ -26,26 +26,17 @@
 
     <main class="shell">
       <header class="hero">
-        <p class="eyebrow"><span aria-hidden="true"></span>浏览器本地 AI 识别</p>
-        <h1>这张图片里是<br><em>初音未来</em>还是<em>洛天依</em>？</h1>
+        <h1>我是<br><em>初音未来</em>还是<em>洛天依</em>？</h1>
         <p class="hero-copy">
-          选择一张图片，模型会直接在你的设备中完成判断。图片不会上传，
-          也不会保存到任何服务器。
+          选择一张图片，模型会在本地完成识别，图片不会上传或保存到任何服务器。
         </p>
-        <div class="privacy-pill">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3 5 6v5c0 4.8 2.9 8.3 7 10 4.1-1.7 7-5.2 7-10V6l-7-3Z"/>
-            <path d="m9.2 12 1.8 1.8 4-4"/>
-          </svg>
-          图片仅在本机处理
-        </div>
       </header>
 
       <section class="recognizer" id="recognizer" aria-labelledby="recognizer-title">
         <div class="panel-heading">
           <div>
             <p class="step-label">01 · 选择图片</p>
-            <h2 id="recognizer-title">上传一张清晰的单人图</h2>
+            <h2 id="recognizer-title">请上传一张清晰的单人图</h2>
           </div>
           <div class="model-status" id="modelStatus" role="status" aria-live="polite">
             <span class="status-dot" aria-hidden="true"></span>
@@ -125,7 +116,7 @@
             </div>
 
             <button class="secondary-button" id="tryAgain" type="button">
-              换一张图片
+              请换一张图片
             </button>
           </div>
         </section>
